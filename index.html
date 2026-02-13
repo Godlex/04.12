@@ -542,6 +542,7 @@
     let noButtonMoveCount = 0;
     let noButtonOldPosition = null;
     let photosAreRendered = false;
+    let autoComplimentInterval = null;
     const maxButtonScale = 0.5;
     const maxOrbitingPhotos = 14;
     const effectsCtx = effectsCanvas.getContext("2d");
@@ -654,12 +655,18 @@
         setTimeout(() => {
           heading.style.opacity = "1";
         }, 50);
-        yesBtn.textContent = "Новый комплимент";
-        yesBtn2.textContent = "Новый комплимент";
+
+        // Remove accept buttons after the first accept and switch to autoplay compliments.
+        yesBtn.style.display = "none";
+        yesBtn.style.pointerEvents = "none";
+        yesBtn2.style.display = "none";
+        yesBtn2.style.pointerEvents = "none";
+
         noBtn.style.opacity = "0";
         noBtn.style.visibility = "hidden";
         noBtn.style.pointerEvents = "none";
         hideSecondYesButton();
+        startAutoCompliments();
       }
       showPhotosAroundCompliments();
 
@@ -681,6 +688,13 @@
         message.textContent = text;
         message.classList.add("show");
       }, 70);
+    }
+
+    function startAutoCompliments() {
+      if (autoComplimentInterval) return;
+      autoComplimentInterval = setInterval(() => {
+        showNextCompliment();
+      }, 3000);
     }
 
     function preloadImage(url) {
@@ -1115,6 +1129,7 @@
     });
 
     window.addEventListener("resize", () => {
+      if (!isFirstClick) return;
       if (noButtonEscaped) {
         const { x, y } = randomPositionForNoButton();
         noBtn.style.left = `${x}px`;
