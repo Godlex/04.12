@@ -42,20 +42,30 @@
     .heart {
       position: absolute;
       font-size: 1.5rem;
-      opacity: 0.2;
-      animation: floatUp linear infinite;
+      opacity: 0.22;
+      animation: floatAmbient linear infinite;
     }
 
-    @keyframes floatUp {
+    .heart.heart-small {
+      font-size: 1rem;
+      opacity: 0.18;
+    }
+
+    .heart.heart-big {
+      font-size: 2rem;
+      opacity: 0.2;
+    }
+
+    @keyframes floatAmbient {
       from {
-        transform: translateY(10vh) scale(0.8);
-        opacity: 0.1;
+        transform: translate3d(0, 0, 0) scale(0.8);
+        opacity: 0.12;
       }
       50% {
         opacity: 0.35;
       }
       to {
-        transform: translateY(-110vh) scale(1.2);
+        transform: translate3d(var(--hx, 0px), var(--hy, -90px), 0) scale(1.2);
         opacity: 0;
       }
     }
@@ -63,7 +73,7 @@
     .card {
       position: relative;
       z-index: 1;
-      width: min(90vw, 520px);
+      width: 100%;
       padding: 2.25rem;
       border-radius: 24px;
       background: var(--card);
@@ -96,6 +106,236 @@
       transform: translateY(0);
     }
 
+    .card-wrapper {
+      position: relative;
+      z-index: 1;
+      width: min(90vw, 520px);
+    }
+
+    .photo-ring {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 420ms ease;
+      z-index: 0;
+    }
+
+    .photo-ring.show {
+      opacity: 1;
+    }
+
+    .photo-item {
+      position: fixed;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: visible;
+    }
+
+    .photo-item-inner.photo-jump {
+      animation: photoPulse 0.55s ease-in-out both;
+    }
+
+    @keyframes photoPulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.6); }
+      100% { transform: scale(1); }
+    }
+
+    .photo-burst-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 11;
+      overflow: hidden;
+    }
+
+    .photo-burst-particle {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff69b4;
+      opacity: 0.9;
+      animation: burstOut 0.85s ease-out forwards;
+      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0) scale(0);
+    }
+
+    .photo-burst-particle:nth-child(odd) {
+      background: #ff95bf;
+      width: 8px;
+      height: 8px;
+    }
+
+    .photo-burst-particle:nth-child(3n) {
+      background: #ff1493;
+      width: 12px;
+      height: 12px;
+    }
+
+    @keyframes burstOut {
+      0% {
+        transform: translate3d(0, 0, 0) scale(0);
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate3d(var(--bx), var(--by), 0) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .photo-item-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #ff95bf;
+      box-shadow: 0 12px 28px rgba(194, 24, 91, 0.35);
+      background: #fff;
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-hearts {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 160px;
+      height: 160px;
+      margin-left: -80px;
+      margin-top: -80px;
+      pointer-events: none;
+    }
+
+    .photo-heart-orbit {
+      position: absolute;
+      left: 80px;
+      top: 80px;
+      width: 0;
+      height: 0;
+      animation: orbitPhoto linear infinite;
+    }
+
+    .photo-heart {
+      position: absolute;
+      font-size: 0.8rem;
+      opacity: 0.95;
+      left: 0;
+      margin-left: -0.45em;
+      width: 1em;
+      text-align: center;
+    }
+
+    .photo-heart-orbit .photo-heart { top: -42px; }
+    .photo-heart-orbit.photo-heart-outer .photo-heart { top: -58px; font-size: 0.7rem; }
+
+    @keyframes orbitPhoto {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .photo-heart-orbit:nth-child(1)  { animation-duration: 4s;   animation-delay: 0s; }
+    .photo-heart-orbit:nth-child(2)  { animation-duration: 5s;   animation-delay: -1s; }
+    .photo-heart-orbit:nth-child(3)  { animation-duration: 6s;   animation-delay: -2.2s; }
+    .photo-heart-orbit:nth-child(4)  { animation-duration: 4.5s; animation-delay: -0.5s; }
+    .photo-heart-orbit:nth-child(5)  { animation-duration: 5.5s; animation-delay: -3s; }
+    .photo-heart-orbit:nth-child(6)  { animation-duration: 3.8s; animation-delay: -0.8s; }
+    .photo-heart-orbit:nth-child(7)  { animation-duration: 5.2s; animation-delay: -2.5s; }
+    .photo-heart-orbit:nth-child(8)  { animation-duration: 4.8s; animation-delay: -1.8s; }
+    .photo-heart-orbit:nth-child(9)  { animation-duration: 6.2s; animation-delay: -3.5s; }
+    .photo-heart-orbit:nth-child(10) { animation-duration: 4.2s; animation-delay: -0.3s; }
+
+    @keyframes flyLeftToRight {
+      0%   { left: -100px; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: 100vw; opacity: 0; }
+    }
+    @keyframes flyRightToLeft {
+      0%   { left: 100vw; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: -100px; opacity: 0; }
+    }
+    @keyframes flyTopToBottom {
+      0%   { top: -100px; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+    @keyframes flyBottomToTop {
+      0%   { top: 100vh; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { top: -100px; opacity: 0; }
+    }
+    @keyframes flyTopLeftToBottomRight {
+      0%   { left: -100px; top: -100px; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: 100vw; top: 100vh; opacity: 0; }
+    }
+    @keyframes flyTopRightToBottomLeft {
+      0%   { left: 100vw; top: -100px; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: -100px; top: 100vh; opacity: 0; }
+    }
+    @keyframes flyBottomLeftToTopRight {
+      0%   { left: -100px; top: 100vh; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: 100vw; top: -100px; opacity: 0; }
+    }
+    @keyframes flyBottomRightToTopLeft {
+      0%   { left: 100vw; top: 100vh; opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { left: -100px; top: -100px; opacity: 0; }
+    }
+
+    .compliments-zone {
+      position: relative;
+      min-height: 200px;
+      margin-bottom: 0.6rem;
+      padding: 2rem 1.2rem;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      overflow: visible;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .compliments-zone::before {
+      content: "";
+      position: absolute;
+      top: 0.4rem;
+      right: 0.75rem;
+      pointer-events: none;
+    }
+
+    .compliments-zone .message {
+      margin: 0;
+      max-width: 86%;
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(255, 79, 135, 0.2);
+      border-radius: 16px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 8px 18px rgba(94, 43, 77, 0.08);
+    }
+
     .buttons {
       display: flex;
       justify-content: center;
@@ -106,6 +346,7 @@
 
     button {
       border: none;
+      outline: none;
       cursor: pointer;
       font-size: 1rem;
       font-weight: 700;
@@ -115,6 +356,11 @@
       transition: transform 120ms ease, box-shadow 180ms ease, background 180ms ease;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
       user-select: none;
+    }
+
+    button:focus {
+      outline: none;
+      border: none;
     }
 
     button:active {
@@ -143,6 +389,7 @@
       background: var(--yes);
       color: #fff;
       border: none;
+      outline: none;
       cursor: pointer;
       font-size: 1rem;
       font-weight: 700;
@@ -211,13 +458,16 @@
     }
 
     .confetti {
-      position: absolute;
+      position: fixed;
       width: 10px;
       height: 10px;
       background: #ff4f87;
-      top: -10px;
+      left: 0;
+      top: 0;
       opacity: 0.9;
-      animation: confettiFall linear forwards;
+      border-radius: 50%;
+      will-change: transform, opacity;
+      animation: confettiBurst linear forwards;
     }
 
     .confetti:nth-child(3n) {
@@ -248,13 +498,13 @@
       height: 6px;
     }
 
-    @keyframes confettiFall {
+    @keyframes confettiBurst {
       0% {
-        transform: translateY(0) rotate(0deg);
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
         opacity: 1;
       }
       100% {
-        transform: translateY(100vh) rotate(720deg);
+        transform: translate3d(var(--cdx, 0px), var(--cdy, 0px), 0) rotate(720deg) scale(1.1);
         opacity: 0;
       }
     }
@@ -297,14 +547,20 @@
 <body>
   <div class="hearts" id="heartsLayer" aria-hidden="true"></div>
   <div class="confetti-container" id="confettiContainer" aria-hidden="true"></div>
+  <div class="photo-burst-container" id="photoBurstContainer" aria-hidden="true"></div>
 
-  <main class="card">
-    <h1>Будешь моей Валентинкой?</h1>
-    <p class="message" id="message" aria-live="polite"></p>
-    <div class="buttons">
-      <button id="yesBtn" type="button">Да</button>
-    </div>
-  </main>
+  <div class="card-wrapper">
+    <div class="photo-ring" id="photoRing" aria-hidden="true"></div>
+    <main class="card">
+      <h1>Будешь моей Валентинкой?</h1>
+      <div class="compliments-zone" id="complimentsZone">
+        <p class="message" id="message" aria-live="polite"></p>
+      </div>
+      <div class="buttons">
+        <button id="yesBtn" type="button">Да</button>
+      </div>
+    </main>
+  </div>
 
   <button id="noBtn" type="button">Нет</button>
   <button id="yesBtn2" type="button">Да</button>
@@ -368,13 +624,16 @@
     const confettiContainer = document.getElementById("confettiContainer");
     const heading = document.querySelector("h1");
     const popup = document.getElementById("popup");
+    const photoRing = document.getElementById("photoRing");
 
     let complimentIndex = 0;
     let noButtonEscaped = false;
     let isFirstClick = true;
     let noButtonMoveCount = 0;
     let noButtonOldPosition = null;
-    const maxButtonScale = 0.5; // Максимальный размер кнопки - 50% от экрана
+    let photosAreRendered = false;
+    const maxButtonScale = 0.5;
+    const maxOrbitingPhotos = 14;
 
     function shuffleInPlace(arr) {
       for (let i = arr.length - 1; i > 0; i -= 1) {
@@ -399,12 +658,17 @@
         noBtn.style.pointerEvents = "none";
         hideSecondYesButton();
       }
+      showPhotosAroundCompliments();
 
       if (complimentIndex === 0) {
         shuffleInPlace(compliments);
       }
 
       createConfetti();
+      if (photoRing.classList.contains("show")) {
+        triggerPhotosJump();
+        createConfetti();
+      }
 
       message.classList.remove("show");
       const text = compliments[complimentIndex];
@@ -414,6 +678,112 @@
         message.textContent = text;
         message.classList.add("show");
       }, 70);
+    }
+
+    function preloadImage(url) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(url);
+        image.onerror = () => resolve(null);
+        image.src = url;
+      });
+    }
+
+    async function loadPhotosFromImageFolder() {
+      try {
+        const response = await fetch("image/photos.json", { cache: "no-store" });
+        if (response.ok) {
+          const list = await response.json();
+          if (Array.isArray(list) && list.length) {
+            const urls = list.map((fileName) =>
+              String(fileName).startsWith("image/") ? String(fileName) : `image/${String(fileName)}`
+            );
+            const verified = await Promise.all(urls.map(preloadImage));
+            return verified.filter(Boolean);
+          }
+        }
+      } catch (e) {}
+
+      const guessedFiles = [];
+      const commonPrefixes = ["photo", "img", "image"];
+      const commonExts = ["jpg", "jpeg", "png", "webp"];
+      for (let number = 1; number <= 12; number += 1) {
+        guessedFiles.push(`image/${number}.jpg`, `image/${number}.png`);
+        for (const prefix of commonPrefixes) {
+          for (const ext of commonExts) {
+            guessedFiles.push(`image/${prefix}${number}.${ext}`);
+          }
+        }
+      }
+      const checked = await Promise.all(guessedFiles.map(preloadImage));
+      return checked.filter(Boolean);
+    }
+
+    const flyAnimations = [
+      { name: "flyLeftToRight", setStart: (el) => { el.style.top = `${15 + Math.random() * 70}vh`; el.style.left = "-100px"; } },
+      { name: "flyRightToLeft", setStart: (el) => { el.style.top = `${15 + Math.random() * 70}vh`; el.style.left = "100vw"; } },
+      { name: "flyTopToBottom", setStart: (el) => { el.style.left = `${10 + Math.random() * 80}vw`; el.style.top = "-100px"; } },
+      { name: "flyBottomToTop", setStart: (el) => { el.style.left = `${10 + Math.random() * 80}vw`; el.style.top = "100vh"; } },
+      { name: "flyTopLeftToBottomRight", setStart: (el) => { el.style.left = "-100px"; el.style.top = "-100px"; } },
+      { name: "flyTopRightToBottomLeft", setStart: (el) => { el.style.left = "100vw"; el.style.top = "-100px"; } },
+      { name: "flyBottomLeftToTopRight", setStart: (el) => { el.style.left = "-100px"; el.style.top = "100vh"; } },
+      { name: "flyBottomRightToTopLeft", setStart: (el) => { el.style.left = "100vw"; el.style.top = "100vh"; } }
+    ];
+
+    function renderPhotoRing(urls) {
+      if (!urls.length) return;
+      const expanded = [];
+      for (let rep = 0; rep < 3; rep++) expanded.push(...urls);
+      shuffleInPlace(expanded);
+      const dirs = [...flyAnimations];
+      shuffleInPlace(dirs);
+      photoRing.textContent = "";
+      const slice = expanded.slice(0, maxOrbitingPhotos);
+      slice.forEach((url, index) => {
+        const frame = document.createElement("figure");
+        frame.className = "photo-item";
+        const fly = dirs[index % dirs.length];
+        fly.setStart(frame);
+        const duration = 6 + Math.random() * 5;
+        const delay = -Math.random() * duration;
+        frame.style.animation = `${fly.name} ${duration}s linear ${delay}s infinite`;
+        frame.style.marginLeft = "-40px";
+        frame.style.marginTop = "-40px";
+
+        const inner = document.createElement("div");
+        inner.className = "photo-item-inner";
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "";
+        inner.appendChild(img);
+        frame.appendChild(inner);
+
+        const heartsWrap = document.createElement("div");
+        heartsWrap.className = "photo-hearts";
+        const heartSymbols = ["❤", "💖", "💗", "💕", "💞", "❤", "💖", "💗", "💕", "💞"];
+        heartSymbols.forEach((symbol, i) => {
+          const orbit = document.createElement("div");
+          orbit.className = "photo-heart-orbit" + (i >= 5 ? " photo-heart-outer" : "");
+          const h = document.createElement("span");
+          h.className = "photo-heart";
+          h.textContent = symbol;
+          orbit.appendChild(h);
+          heartsWrap.appendChild(orbit);
+        });
+        frame.appendChild(heartsWrap);
+
+        photoRing.appendChild(frame);
+      });
+      photoRing.classList.add("show");
+      photosAreRendered = true;
+    }
+
+    async function showPhotosAroundCompliments() {
+      if (photosAreRendered) return;
+      const imageUrls = await loadPhotosFromImageFolder();
+      if (imageUrls.length) {
+        renderPhotoRing(imageUrls);
+      }
     }
 
     function randomPositionForNoButton() {
@@ -630,33 +1000,113 @@
     yesBtn.addEventListener("click", handleYesClick);
     yesBtn2.addEventListener("click", handleSecondYesClick);
 
+    const photoBurstContainer = document.getElementById("photoBurstContainer");
+    const heartSymbols = ["❤", "💖", "💗", "💕"];
+
     function createHeart() {
       const heart = document.createElement("span");
-      heart.className = "heart";
-      heart.textContent = Math.random() > 0.5 ? "❤" : "💖";
+      const r = Math.random();
+      heart.className = "heart" + (r < 0.25 ? " heart-small" : r > 0.75 ? " heart-big" : "");
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
       heart.style.left = `${Math.random() * 100}vw`;
-      heart.style.animationDuration = `${6 + Math.random() * 6}s`;
-      heart.style.fontSize = `${1 + Math.random() * 1.3}rem`;
+      heart.style.top = `${Math.random() * 100}vh`;
+      heart.style.animationDuration = `${7 + Math.random() * 9}s`;
+      heart.style.setProperty("--hx", `${-90 + Math.random() * 180}px`);
+      heart.style.setProperty("--hy", `${-120 + Math.random() * 240}px`);
+      heart.style.fontSize = heart.classList.contains("heart-small") ? "1rem" : heart.classList.contains("heart-big") ? "2rem" : `${1.1 + Math.random() * 1.2}rem`;
       heartsLayer.appendChild(heart);
-      setTimeout(() => heart.remove(), 12000);
+      setTimeout(() => heart.remove(), 14000);
+    }
+
+    function createPinkParticlesAt(centerX, centerY) {
+      if (photoBurstContainer.childElementCount > 900) {
+        for (let i = 0; i < 250 && photoBurstContainer.firstChild; i += 1) {
+          photoBurstContainer.removeChild(photoBurstContainer.firstChild);
+        }
+      }
+
+      const count = 30;
+      const radius = 70;
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+        const dist = radius * (0.7 + Math.random() * 0.6);
+        const bx = Math.cos(angle) * dist;
+        const by = Math.sin(angle) * dist;
+        const p = document.createElement("div");
+        p.className = "photo-burst-particle";
+        p.style.left = `${centerX}px`;
+        p.style.top = `${centerY}px`;
+        p.style.marginLeft = "-5px";
+        p.style.marginTop = "-5px";
+        p.style.setProperty("--bx", `${bx}px`);
+        p.style.setProperty("--by", `${by}px`);
+        p.style.animationDelay = `${Math.random() * 0.1}s`;
+        p.addEventListener("animationend", () => p.remove(), { once: true });
+        fragment.appendChild(p);
+      }
+      photoBurstContainer.appendChild(fragment);
+    }
+
+    function triggerPhotosJump() {
+      const items = document.querySelectorAll(".photo-item");
+      const inners = document.querySelectorAll(".photo-item-inner");
+      inners.forEach((el) => el.classList.add("photo-jump"));
+      setTimeout(() => {
+        inners.forEach((el) => el.classList.remove("photo-jump"));
+        items.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          createPinkParticlesAt(cx, cy);
+        });
+      }, 560);
     }
 
     function createConfetti() {
-      const confettiCount = 150;
-      const duration = 3000;
-      
-      for (let i = 0; i < confettiCount; i += 1) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = `${Math.random() * 100}%`;
-        confetti.style.animationDuration = `${duration + Math.random() * 1000}ms`;
-        confetti.style.animationDelay = `${Math.random() * 500}ms`;
-        confettiContainer.appendChild(confetti);
-        
-        setTimeout(() => {
-          confetti.remove();
-        }, duration + 1500);
+      const duration = 1200;
+      const targets = [];
+
+      const card = document.querySelector(".card");
+      if (card) {
+        const cardRect = card.getBoundingClientRect();
+        targets.push({
+          x: cardRect.left + cardRect.width / 2,
+          y: cardRect.top + cardRect.height / 2,
+          count: 120
+        });
       }
+
+      const photos = document.querySelectorAll(".photo-item");
+      photos.forEach((photo) => {
+        const rect = photo.getBoundingClientRect();
+        targets.push({
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+          count: 18
+        });
+      });
+
+      if (!targets.length) {
+        targets.push({ x: window.innerWidth / 2, y: window.innerHeight / 2, count: 120 });
+      }
+
+      targets.forEach((target) => {
+        for (let i = 0; i < target.count; i += 1) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 40 + Math.random() * 220;
+          confetti.style.left = `${target.x}px`;
+          confetti.style.top = `${target.y}px`;
+          confetti.style.setProperty("--cdx", `${Math.cos(angle) * dist}px`);
+          confetti.style.setProperty("--cdy", `${Math.sin(angle) * dist}px`);
+          confetti.style.animationDuration = `${duration + Math.random() * 500}ms`;
+          confetti.style.animationDelay = `${Math.random() * 100}ms`;
+          confettiContainer.appendChild(confetti);
+          confetti.addEventListener("animationend", () => confetti.remove(), { once: true });
+        }
+      });
     }
 
     noBtn.addEventListener("mouseenter", moveNoButton);
@@ -679,11 +1129,11 @@
       positionNoButtonNextToYes();
     });
 
-    for (let i = 0; i < 18; i += 1) {
-      setTimeout(createHeart, i * 250);
+    for (let i = 0; i < 42; i += 1) {
+      setTimeout(createHeart, i * 100);
     }
     positionNoButtonNextToYes();
-    setInterval(createHeart, 900);
+    setInterval(createHeart, 380);
   </script>
 </body>
 </html>
