@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вопрос на День Святого Валентина</title>
+  <style>
+    :root {
+      --bg-start: #ffd1dc;
+      --bg-end: #ffe8f0;
+      --card: rgba(255, 255, 255, 0.8);
+      --text: #5e2b4d;
+      --yes: #ff4f87;
+      --yes-hover: #ff2f75;
+      --no: #6e6e6e;
+      --shadow: 0 12px 30px rgba(94, 43, 77, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.2;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(10vh) scale(0.8);
+        opacity: 0.1;
+      }
+      50% {
+        opacity: 0.35;
+      }
+      to {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(90vw, 520px);
+      padding: 2.25rem;
+      border-radius: 24px;
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      line-height: 1.25;
+      letter-spacing: 0.2px;
+    }
+
+    .message {
+      min-height: 2.2rem;
+      margin-bottom: 1.2rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #c2185b;
+      transition: opacity 220ms ease, transform 220ms ease;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.9rem;
+      position: relative;
+      min-height: 54px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 0.85rem 1.7rem;
+      border-radius: 999px;
+      transition: transform 120ms ease, box-shadow 180ms ease, background 180ms ease;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      user-select: none;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #yesBtn {
+      background: var(--yes);
+      color: #fff;
+    }
+
+    #yesBtn:hover {
+      background: var(--yes-hover);
+      box-shadow: 0 10px 22px rgba(255, 79, 135, 0.35);
+    }
+
+    #yesBtn.bigger {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  font-size 0.4s ease, 
+                  padding 0.4s ease,
+                  box-shadow 0.4s ease;
+    }
+
+    #yesBtn2 {
+      position: fixed;
+      background: var(--yes);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 0.85rem 1.7rem;
+      border-radius: 999px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+      user-select: none;
+      z-index: 5;
+      clip-path: inset(0 100% 0 0);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: clip-path 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease, visibility 0s 400ms;
+      overflow: hidden;
+    }
+
+    #yesBtn2.show {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: clip-path 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease, visibility 0s 0s;
+    }
+
+    #yesBtn2:hover {
+      background: var(--yes-hover);
+      box-shadow: 0 10px 22px rgba(255, 79, 135, 0.35);
+    }
+
+    #yesBtn2:active {
+      transform: scale(0.98);
+    }
+
+    #noBtn {
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: var(--no);
+      color: #fff;
+      transition: clip-path 400ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease;
+      z-index: 5;
+      visibility: hidden;
+      clip-path: inset(0 0 0 0);
+      overflow: hidden;
+    }
+
+    #noBtn.teleport-out {
+      clip-path: inset(0 0 0 100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #noBtn.teleport-in {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #ff4f87;
+      top: -10px;
+      opacity: 0.9;
+      animation: confettiFall linear forwards;
+    }
+
+    .confetti:nth-child(3n) {
+      background: #ff2f75;
+      width: 8px;
+      height: 8px;
+    }
+
+    .confetti:nth-child(3n+1) {
+      background: #ff69b4;
+      width: 12px;
+      height: 12px;
+    }
+
+    .confetti:nth-child(5n) {
+      background: #ff1493;
+      border-radius: 50%;
+    }
+
+    .confetti:nth-child(7n) {
+      background: #ffb6c1;
+      transform: rotate(45deg);
+    }
+
+    .confetti:nth-child(11n) {
+      background: #fff;
+      width: 6px;
+      height: 6px;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .popup {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(94, 43, 77, 0.3);
+      z-index: 100;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      border: 2px solid rgba(255, 79, 135, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .popup.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .popup::before {
+      content: "💕";
+      display: block;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="heartsLayer" aria-hidden="true"></div>
+  <div class="confetti-container" id="confettiContainer" aria-hidden="true"></div>
+
+  <main class="card">
+    <h1>Будешь моей Валентинкой?</h1>
+    <p class="message" id="message" aria-live="polite"></p>
+    <div class="buttons">
+      <button id="yesBtn" type="button">Да</button>
+    </div>
+  </main>
+
+  <button id="noBtn" type="button">Нет</button>
+  <button id="yesBtn2" type="button">Да</button>
+
+  <div class="popup" id="popup">
+    Нажми да
+  </div>
+
+  <script>
+   const compliments = [
+  "Ты — причина, по которой мир кажется лучше.",
+  "С тобой всё становится проще и теплее.",
+  "Ты вдохновляешь меня быть лучше каждый день.",
+  "Твоя доброта делает этот мир светлее.",
+  "Ты — моя самая красивая мысль.",
+  "С тобой даже тишина уютная.",
+  "Ты умеешь делать счастливыми всех вокруг.",
+  "Ты — моё самое приятное чудо.",
+  "Твоя энергия наполняет всё вокруг.",
+  "Ты — лучшее, что со мной случалось.",
+
+  "Твой смех — моя любимая мелодия.",
+  "Ты делаешь этот мир мягче и добрее.",
+  "Рядом с тобой хочется улыбаться чаще.",
+  "Ты — моё спокойствие и радость.",
+  "Ты — настоящее сокровище.",
+  "С тобой каждый день — подарок.",
+  "Ты делаешь мою жизнь ярче.",
+  "Ты — мой источник вдохновения.",
+  "Твоё присутствие — лучшее лекарство.",
+  "Ты — мой самый тёплый человек.",
+
+  "Ты умеешь превращать обычное в волшебное.",
+  "Ты — мой самый красивый сон наяву.",
+  "Твоя забота бесценна.",
+  "Ты делаешь даже трудные дни легче.",
+  "Ты — мой личный лучик света.",
+  "С тобой хочется строить мечты.",
+  "Ты — моё счастье без условий.",
+  "Ты наполняешь моё сердце теплом.",
+  "Ты — мой любимый сюрприз от жизни.",
+  "Ты — моя самая большая радость.",
+
+  "Твой голос успокаивает лучше музыки.",
+  "Ты — моё вдохновение навсегда.",
+  "С тобой всё кажется возможным.",
+  "Ты — мой самый светлый человек.",
+  "Ты делаешь меня счастливее просто тем, что есть.",
+  "Ты — моё маленькое чудо.",
+  "Твоя нежность бесценна.",
+  "Ты — мой самый дорогой подарок.",
+  "Ты делаешь мою душу спокойной.",
+  "Ты — моё самое тёплое чувство."
+];
+
+    const yesBtn = document.getElementById("yesBtn");
+    const yesBtn2 = document.getElementById("yesBtn2");
+    const noBtn = document.getElementById("noBtn");
+    const message = document.getElementById("message");
+    const heartsLayer = document.getElementById("heartsLayer");
+    const confettiContainer = document.getElementById("confettiContainer");
+    const heading = document.querySelector("h1");
+    const popup = document.getElementById("popup");
+
+    let complimentIndex = 0;
+    let noButtonEscaped = false;
+    let isFirstClick = true;
+    let noButtonMoveCount = 0;
+    let noButtonOldPosition = null;
+    const maxButtonScale = 0.5; // Максимальный размер кнопки - 50% от экрана
+
+    function shuffleInPlace(arr) {
+      for (let i = arr.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function showNextCompliment() {
+      if (isFirstClick) {
+        isFirstClick = false;
+        heading.textContent = "Я тебя люблю, Буся";
+        heading.style.transition = "opacity 0.3s ease";
+        heading.style.opacity = "0";
+        setTimeout(() => {
+          heading.style.opacity = "1";
+        }, 50);
+        yesBtn.textContent = "Новый комплимент";
+        yesBtn2.textContent = "Новый комплимент";
+        noBtn.style.opacity = "0";
+        noBtn.style.visibility = "hidden";
+        noBtn.style.pointerEvents = "none";
+        hideSecondYesButton();
+      }
+
+      if (complimentIndex === 0) {
+        shuffleInPlace(compliments);
+      }
+
+      createConfetti();
+
+      message.classList.remove("show");
+      const text = compliments[complimentIndex];
+      complimentIndex = (complimentIndex + 1) % compliments.length;
+
+      setTimeout(() => {
+        message.textContent = text;
+        message.classList.add("show");
+      }, 70);
+    }
+
+    function randomPositionForNoButton() {
+      const padding = 14;
+      const rect = noBtn.getBoundingClientRect();
+      const buttonWidth = rect.width;
+      const buttonHeight = rect.height;
+      
+      // Получаем позиции карточки и попапа
+      const card = document.querySelector(".card");
+      const popup = document.getElementById("popup");
+      const cardRect = card ? card.getBoundingClientRect() : null;
+      const popupRect = popup && popup.classList.contains("show") ? popup.getBoundingClientRect() : null;
+      
+      let x, y;
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      do {
+        const maxX = window.innerWidth - buttonWidth - padding;
+        const maxY = window.innerHeight - buttonHeight - padding;
+        x = Math.max(padding, Math.floor(Math.random() * Math.max(padding, maxX)));
+        y = Math.max(padding, Math.floor(Math.random() * Math.max(padding, maxY)));
+        
+        attempts += 1;
+        
+        // Проверяем, не пересекается ли позиция с карточкой
+        let overlapsCard = false;
+        if (cardRect) {
+          const buttonRight = x + buttonWidth;
+          const buttonBottom = y + buttonHeight;
+          const cardRight = cardRect.right + padding;
+          const cardBottom = cardRect.bottom + padding;
+          const cardLeft = cardRect.left - padding;
+          const cardTop = cardRect.top - padding;
+          
+          overlapsCard = !(buttonRight < cardLeft || x > cardRight || buttonBottom < cardTop || y > cardBottom);
+        }
+        
+        // Проверяем, не пересекается ли позиция с попапом
+        let overlapsPopup = false;
+        if (popupRect) {
+          const buttonRight = x + buttonWidth;
+          const buttonBottom = y + buttonHeight;
+          const popupRight = popupRect.right + padding;
+          const popupBottom = popupRect.bottom + padding;
+          const popupLeft = popupRect.left - padding;
+          const popupTop = popupRect.top - padding;
+          
+          overlapsPopup = !(buttonRight < popupLeft || x > popupRight || buttonBottom < popupTop || y > popupBottom);
+        }
+        
+        // Если не пересекается ни с карточкой, ни с попапом, выходим из цикла
+        if (!overlapsCard && !overlapsPopup) {
+          break;
+        }
+      } while (attempts < maxAttempts);
+      
+      return { x, y };
+    }
+
+    function positionNoButtonNextToYes() {
+      const padding = 14;
+      const gap = 12;
+      const yesRect = yesBtn.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+
+      const desiredX = yesRect.right + gap;
+      const desiredY = yesRect.top + (yesRect.height - noRect.height) / 2;
+
+      const x = Math.min(
+        window.innerWidth - noRect.width - padding,
+        Math.max(padding, desiredX)
+      );
+      const y = Math.min(
+        window.innerHeight - noRect.height - padding,
+        Math.max(padding, desiredY)
+      );
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+      noBtn.style.visibility = "visible";
+    }
+
+    function moveNoButton() {
+      noButtonEscaped = true;
+      
+      // Сохраняем текущую позицию кнопки "Нет" ПЕРЕД перемещением (начиная с 3-го перемещения)
+      let previousPosition = null;
+      if (noButtonMoveCount >= 2 && isFirstClick) {
+        const currentRect = noBtn.getBoundingClientRect();
+        previousPosition = {
+          left: currentRect.left,
+          top: currentRect.top,
+          width: currentRect.width,
+          height: currentRect.height
+        };
+      }
+      
+      noButtonMoveCount += 1;
+      
+      // Если это перемещение после 3-го, показываем вторую кнопку "Да" на старом месте
+      if (noButtonMoveCount >= 3 && isFirstClick && previousPosition) {
+        // Скрываем старую вторую кнопку "Да" если она была видна
+        hideSecondYesButton();
+        // Показываем новую вторую кнопку "Да" на предыдущей позиции сразу
+        showSecondYesButtonAtPosition(previousPosition);
+      }
+      
+      noBtn.classList.remove("teleport-in");
+      noBtn.classList.add("teleport-out");
+
+      setTimeout(() => {
+        const { x, y } = randomPositionForNoButton();
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+        noBtn.classList.remove("teleport-out");
+        noBtn.classList.add("teleport-in");
+      }, 400);
+
+      if (noButtonMoveCount >= 3 && isFirstClick) {
+        // Показываем всплывающее окно при каждом перемещении после 3-го
+        showPopup();
+        
+        if (noButtonMoveCount === 3) {
+          // При первом появлении сохраняем позицию для второй кнопки
+          if (previousPosition) {
+            noButtonOldPosition = previousPosition;
+          }
+        } else {
+          increaseYesButton();
+        }
+      }
+    }
+
+    function increaseYesButton() {
+      if (!isFirstClick) return;
+      
+      const baseWidth = yesBtn.getBoundingClientRect().width || 100;
+      const screenWidth = window.innerWidth;
+      const maxWidth = screenWidth * maxButtonScale;
+      
+      const currentTransform = yesBtn.style.transform || "scale(1)";
+      const currentScaleMatch = currentTransform.match(/scale\(([\d.]+)\)/);
+      const currentScale = currentScaleMatch ? parseFloat(currentScaleMatch[1]) : 1;
+      
+      const increment = 0.2;
+      const newScale = Math.min(currentScale + increment, maxWidth / baseWidth);
+      
+      const fontSize = Math.min(1 + (newScale - 1) * 0.25, 2.5);
+      const paddingMultiplier = 1 + (newScale - 1) * 0.25;
+      
+      yesBtn.style.transform = `scale(${newScale})`;
+      yesBtn.style.fontSize = `${fontSize}rem`;
+      yesBtn.style.padding = `${0.85 * paddingMultiplier}rem ${1.7 * paddingMultiplier}rem`;
+      yesBtn.style.boxShadow = `0 ${8 + (newScale - 1) * 20}px ${16 + (newScale - 1) * 30}px rgba(255, 79, 135, ${Math.min(0.12 + (newScale - 1) * 0.3, 0.6)})`;
+      yesBtn.classList.add("bigger");
+    }
+
+    function showSecondYesButton() {
+      if (!isFirstClick || !noButtonOldPosition) return;
+      showSecondYesButtonAtPosition(noButtonOldPosition);
+    }
+
+    function showSecondYesButtonAtPosition(position) {
+      if (!isFirstClick || !position) return;
+      
+      yesBtn2.style.left = `${position.left}px`;
+      yesBtn2.style.top = `${position.top}px`;
+      yesBtn2.style.width = `${position.width}px`;
+      yesBtn2.style.height = `${position.height}px`;
+      yesBtn2.classList.add("show");
+    }
+
+    function hideSecondYesButton() {
+      yesBtn2.classList.remove("show");
+    }
+
+    function showPopup() {
+      popup.classList.add("show");
+      yesBtn.classList.add("bigger");
+      
+      setTimeout(() => {
+        hidePopup();
+      }, 1000);
+    }
+
+    function hidePopup() {
+      popup.classList.remove("show");
+    }
+
+    function resetFirstButtonSize() {
+      yesBtn.style.transform = "scale(1)";
+      yesBtn.style.fontSize = "1rem";
+      yesBtn.style.padding = "0.85rem 1.7rem";
+      yesBtn.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.12)";
+      yesBtn.classList.remove("bigger");
+    }
+
+    function handleYesClick() {
+      hidePopup();
+      resetFirstButtonSize();
+      hideSecondYesButton();
+      showNextCompliment();
+    }
+
+    function handleSecondYesClick() {
+      hidePopup();
+      resetFirstButtonSize();
+      hideSecondYesButton();
+      showNextCompliment();
+    }
+
+    yesBtn.addEventListener("click", handleYesClick);
+    yesBtn2.addEventListener("click", handleSecondYesClick);
+
+    function createHeart() {
+      const heart = document.createElement("span");
+      heart.className = "heart";
+      heart.textContent = Math.random() > 0.5 ? "❤" : "💖";
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+      heart.style.fontSize = `${1 + Math.random() * 1.3}rem`;
+      heartsLayer.appendChild(heart);
+      setTimeout(() => heart.remove(), 12000);
+    }
+
+    function createConfetti() {
+      const confettiCount = 150;
+      const duration = 3000;
+      
+      for (let i = 0; i < confettiCount; i += 1) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = `${Math.random() * 100}%`;
+        confetti.style.animationDuration = `${duration + Math.random() * 1000}ms`;
+        confetti.style.animationDelay = `${Math.random() * 500}ms`;
+        confettiContainer.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, duration + 1500);
+      }
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+    noBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    });
+
+    window.addEventListener("resize", () => {
+      if (noButtonEscaped) {
+        const { x, y } = randomPositionForNoButton();
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+        return;
+      }
+      positionNoButtonNextToYes();
+    });
+
+    for (let i = 0; i < 18; i += 1) {
+      setTimeout(createHeart, i * 250);
+    }
+    positionNoButtonNextToYes();
+    setInterval(createHeart, 900);
+  </script>
+</body>
+</html>
